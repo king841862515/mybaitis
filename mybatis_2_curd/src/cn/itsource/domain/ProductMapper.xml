@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.itsource.domain.ProductMapper">
+
+      <!-- 这里是数据库字段（列名）和java属性的名字可以对应不上的代码   ，需要手动匹配  -->
+	  <!-- 手动完成结果映射
+	  	type  要映射的domain类型，可以直接使用别名
+	  	id    是这个映射的名称  （需要自己取得名字）
+	      -->
+	<resultMap type="product" id="productMap">
+	<!-- 
+		id  主键映射使用id标签
+		column 列名（数据库的列名）
+		property 属性名（java代码中的属性名）			
+	 -->
+		<id    column="id"   property="id"/>
+	<!-- 
+		 其他基本属性用result标签  
+		 column 列名（数据库的列名）
+		property 属性名（java代码中的属性名）
+	 -->
+		<result column="pname" property="name"/>
+	</resultMap>
+	
+	     <!-- 然后再调用上面的手动配置的映射（使用自己取名的id）
+	             返回结果类型变成resultMap，不再是resultType
+	       -->
+	<select id="get"  parameterType="long"   resultMap="productMap">
+		select * from products where pid = #{pid}
+	</select>  
+
+    <!-- 这里是数据库字段（列名）和java属性的名字可以对应上的代码
+		<select id="get"  parameterType="long"   resultType="product">
+			select * from products where pid = #{pid}
+		</select>    
+     -->
+	
+	
+	
+	<!-- 如果返回的是集合list<cn.itsource.domain.Product>，那么下面的的类型是返回集合中对象的类型   -->
+	
+	<select id="getAll" resultType="product" >
+		select * from products
+	</select>
+	
+	
+	<insert id="save" parameterType="product" useGeneratedKeys="true"  keyProperty="pid" > 
+		insert into products(pid,pname,price,flag,category_id)
+		values(
+			#{pid},#{pname},#{price},#{flag},#{category_id}
+		)
+	</insert> 
+	
+	<update id="update" parameterType="product">
+		update products set 
+		pname=#{pname},price=#{price},flag=#{flag},category_id=#{category_id} 
+		where pid =#{pid}
+	</update>
+	
+	<delete id="delete"  parameterType="long">
+		delete from products where pid = #{pid}
+	</delete>
+	
+</mapper>

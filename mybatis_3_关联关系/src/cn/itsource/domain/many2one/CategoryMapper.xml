@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper  namespace="cn.itsource.domain.many2one.CategoryMapper">
+ 	
+ 	<insert id="saveCategory" parameterType="cn.itsource.domain.many2one.Category" useGeneratedKeys="true"  keyProperty="cid">
+ 		insert into category (cid,cname) values (#{cid},#{cname})
+ 	</insert>
+ 	
+ 	<!-- 下面是嵌套查询的第二条sql语句，和嵌套查询mapper.xml文件联动的 -->
+    <select id="getCategoryById" parameterType="long"   resultType="cn.itsource.domain.many2one.Category" >
+        select * from category where cid = #{cid}
+    </select>
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </mapper>

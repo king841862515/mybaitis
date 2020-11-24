@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" 
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+						    http://www.springframework.org/schema/context
+						    http://www.springframework.org/schema/context/spring-context.xsd
+						    http://www.springframework.org/schema/beans
+						    http://www.springframework.org/schema/beans/spring-beans.xsd
+						    http://www.springframework.org/schema/tx
+						    http://www.springframework.org/schema/tx/spring-tx.xsd
+						    http://www.springframework.org/schema/jdbc
+						    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+						    http://www.springframework.org/schema/cache
+						    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd
+						    http://www.springframework.org/schema/aop
+						    http://www.springframework.org/schema/aop/spring-aop.xsd
+						    http://www.springframework.org/schema/util
+						    http://www.springframework.org/schema/util/spring-util.xsd">
+   
+   
+   
+   
+    <!-- 加载配置文件 -,注意spring3中每个context都要需要加上ignore-unresolvable="true"，不然就会覆盖掉上一个-->
+    
+    
+    <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
+    
+  
+  
+  
+    <!-- dataSource 配置 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+							
+        <!-- 基本属性 url、user、password -->
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.usename}"/>
+        <property name="password" value="${jdbc.password}"/>
+
+        <!-- 配置初始化大小 -->
+        <property name="initialSize" value="1"/>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="1"/>
+        <!-- 连接池最大使用连接数量 -->
+        <property name="maxActive" value="20"/>
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="60000"/>
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000"/>
+
+    </bean>
+  
+    <!--使用Spring+MyBatis的环境下，我们需要配值一个SqlSessionFactoryBean来充当SqlSessionFactory
+        在基本的MyBatis中，SqlSessionFactory可以使用SqlSessionFactoryBuilder来创建，
+        而在mybatis-spring中，则使用SqlSessionFactoryBean来创建。-->
+        
+    <!-- mybatis文件配置，扫描所有mapper文件 -->
+    <bean id="sqlSessionFactory"  class="org.mybatis.spring.SqlSessionFactoryBean">
+    	<property name="dataSource"  ref="dataSource"></property>
+    	<property name="mapperLocations" value="classpath*:cn/itsource/ssm/mapper/*Mapper.xml"></property>
+    	<property name="typeAliasesPackage">
+    		<value>
+    			cn.itsource.ssm.domain
+    			cn.itsource.ssm.query
+    		</value> 	
+    	</property>
+    </bean>
+         
+   
+
+    <!-- spring与mybatis整合配置，自动扫描所有dao ,将dao接口生成代理注入到Spring-->
+    <!-- MapperScannerConfigurer 的作用是取代手动添加 Mapper ，自动扫描完成接口代理。
+           而不需要再在mybatis-config.xml里面去逐一配置mappers。 -->
+           
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<property name="basePackage"  value="cn.itsource.ssm.mapper"></property>
+    
+    </bean>
+          
+  
+  
+  
+  
+    <!-- 自动扫描web包 ,将带有注解的类 纳入spring容器管理 -->
+    <context:component-scan base-package="cn.itsource.ssm"></context:component-scan>
+  
+  
+  
+    <import resource="classpath:plugins/applicationContext-mvc.xml"/>
+
+
+
+
+
+
+
+
+
+
+
+ 
+</beans>

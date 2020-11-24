@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.itsource.domain.many2one.Product嵌套结果Mapper">
+
+	<resultMap type="cn.itsource.domain.many2one.Product" id="ProductMap">
+	   <!-- 
+	   <result  property="category"   column="category_id"/>这种只能匹配一列，category对象中有好几个属性，所以不能和category_id匹配
+	    -->	
+	        
+	    <id     property="pid"     column="pid"/>
+	    <result property="pname"   column="pname"/>
+	    <result property="price"   column="price"/>
+	    <result property="flag"    column="flag"/>
+	    
+	    
+	    <!-- 配置对象关联多列应该使用associate ,在此标签底下使用二级标签id result来具体表现对象属性的列
+	        association：配置对象关联多列（注意：使用这个标签，默认映射（就是pid，pname，price，flag这些除了category_id之外的其他属性）全部失效，只能手动配置，）
+	        property：配置的对象
+	        javaType：配置对象对应的类型（这个必须有）
+	    -->
+	    <association property="category" javaType="cn.itsource.domain.many2one.Category" >
+	        <!-- 
+	          property:查询的对象category中的属性id和name
+	          column:查询的sql结果集中的id和name,
+	                 如果查询的sql集中的id和name是自动生成的话，下面的colum属性就需要在sql语句中的定义别名来使用ccid，ccname之类的
+	        -->
+	    	<id      property="cid"      column="cid" />
+	    	<result  property="cname"    column="cname" />
+	    </association>
+	</resultMap>
+	
+    <!-- 只要有关联关系，咱们的查询属性肯定对应不上，只能使用自定义方式 ,加上上面的resurtMap -->
+   	<select id="getProducts" resultMap="ProductMap">
+   		select * from products p 
+   			left join category c on p.category_id = c.cid 			
+   	</select>
+   	
+   	
+	<insert id="saveProduct" parameterType="cn.itsource.domain.many2one.Product" useGeneratedKeys="true"  keyProperty="pid" > 
+		insert into products(pid,pname,price,flag,category_id)
+		values(
+			#{pid},#{pname},#{price},#{flag},#{category.cid}
+		)
+	</insert> 
+	
+	<update id="update" parameterType="product"> 
+		update products set 
+		pname=#{pname},price=#{price},flag=#{flag},category_id=#{category_id} 
+		where pid =#{pid}
+	</update>	
+	
+	<delete id="delete"  parameterType="long">
+		delete from products where pid = #{pid}
+	</delete>
+	
+</mapper>

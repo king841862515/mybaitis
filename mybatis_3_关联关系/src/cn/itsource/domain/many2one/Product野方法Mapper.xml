@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.itsource.domain.many2one.Product野方法Mapper">
+
+
+    <!-- 野方法就是不用associate标签，直接使用resultMap标签，
+        主要是删除了associate标签，就没有使默认映射失效，然后用category.xx的方式对应属性 -->
+        
+	<resultMap type="cn.itsource.domain.many2one.Product" id="ProductMap">
+	   <result  property="category.cid"     column="cid"/>
+	   <result  property="category.cname"   column="cname"/>
+	</resultMap>
+	
+    <!-- 只要有关联关系，咱们的查询属性肯定对应不上，只能使用自定义方式 ,加上上面的resurtMap -->
+   	<select id="getProducts" resultMap="ProductMap">
+   		select * from products p 
+   			left join category c on p.category_id = c.cid 			
+   	</select>
+   	
+   	
+	<insert id="saveProduct" parameterType="cn.itsource.domain.many2one.Product" useGeneratedKeys="true"  keyProperty="pid" > 
+		insert into products(pid,pname,price,flag,category_id)
+		values(
+			#{pid},#{pname},#{price},#{flag},#{category.cid}
+		)
+	</insert> 
+	
+	<update id="update" parameterType="product"> 
+		update products set 
+		pname=#{pname},price=#{price},flag=#{flag},category_id=#{category_id} 
+		where pid =#{pid}
+	</update>	
+	
+	<delete id="delete"  parameterType="long">
+		delete from products where pid = #{pid}
+	</delete>
+	
+</mapper>

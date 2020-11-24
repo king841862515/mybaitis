@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper  namespace="cn.itsource.domain.one2many.CategoryAlias嵌套查询Mapper">
+ 	
+ 	<!-- 自己设置映射关系 -->
+ 	<resultMap type="cn.itsource.domain.one2many.CategoryAlias" id="categoryMap">	
+ 	
+ 	
+ 		<id      property="cid"      column="cid" />
+	    <result  property="cname"    column="cname" />
+ 		<!-- 
+ 			column="cid" 是目录表的id
+ 			ofType= ""   是返回的类型
+ 			select=""    是引用下面第一个select标签
+ 		 -->
+ 		<collection property="products" column="cid"  
+ 			ofType="cn.itsource.domain.one2many.ProductAlias" select="getProductsByCategoryId" >
+ 		</collection>
+ 	</resultMap>
+ 	
+ 	
+ 		<!-- 查询商品 -->
+ 	<select id="getProductsByCategoryId" parameterType="long" resultType="cn.itsource.domain.one2many.ProductAlias">
+ 		<!-- #{中的id随便写，只是一个变量，没有特地的对应谁} -->
+ 		select * from products where category_id = #{id}
+ 	</select>
+ 	
+ 	
+    <select id="getCategorys" resultMap="categoryMap"  >
+       select * from category 
+    </select>
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </mapper>

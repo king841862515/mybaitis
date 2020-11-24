@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.itsource.domain.many2one.Product嵌套查询Mapper">
+
+	<resultMap type="cn.itsource.domain.many2one.Product" id="ProductMap">
+	    <id     property="pid"     column="pid"/>
+	    <result property="pname"   column="pname"/>
+	    <result property="price"   column="price"/>
+	    <result property="flag"    column="flag"/>
+	    
+	    <association property="category"  column="category_id" select="cn.itsource.domain.many2one.CategoryMapper.getCategoryById"></association>
+	    
+	</resultMap>
+	
+	<!-- 根据id查询一个目录,上面associate标签中的传过来的category_id的值就作为下面sql语句中cid的值
+	
+	  注意：如果下面的第二条sql语句不在一个xml文件中，就在上面的select中加上命名空间的路径
+	  
+    <select id="getCategoryById" parameterType="long"   resultType="cn.itsource.domain.many2one.Category" >
+        select * from category where cid = #{cid}
+    </select>
+     -->
+    
+   	<select id="getProducts" resultMap="ProductMap">
+   		select * from products 					
+   	</select>
+   	
+   	
+	<insert id="saveProduct" parameterType="cn.itsource.domain.many2one.Product" useGeneratedKeys="true"  keyProperty="pid" > 
+		insert into products(pid,pname,price,flag,category_id)
+		values(
+			#{pid},#{pname},#{price},#{flag},#{category.cid}
+		)
+	</insert> 
+	
+	<update id="update" parameterType="product"> 
+		update products set 
+		pname=#{pname},price=#{price},flag=#{flag},category_id=#{category_id} 
+		where pid =#{pid}
+	</update>	
+	
+	<delete id="delete"  parameterType="long">
+		delete from products where pid = #{pid}
+	</delete>
+	
+</mapper>

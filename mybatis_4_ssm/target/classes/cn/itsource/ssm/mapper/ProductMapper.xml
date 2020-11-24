@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="cn.itsource.ssm.mapper.ProductMapper">
+
+    <!-- 在接口xxx.mapper中的方法名自动对应这里的id名，这一步是spring完成的 -->
+	<select id="getAll"     resultType="cn.itsource.ssm.domain.Product">
+		select * from products 
+	</select>
+	
+	
+	
+	
+</mapper>

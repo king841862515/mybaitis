@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+   <!--引入配置文件-->
+   <properties resource= "db.properties" ></properties>
+   
+   <typeAliases>
+      <!-- type是全限定名      alias是别名 （不区分大小写，所以不能取一样的字母，大小写不一样也不可以） 这种方式有点麻烦，所有的domain都要一个一个写，所以有另一种方式
+      <typeAlias type="cn.itsource.domain.Product"     alias="product"/>
+      -->
+      <!-- cn.itsource.domain包下面的所有domain都取了别名，就是他的类名 -->
+   		<package name="cn.itsource.domain"/>
+   </typeAliases>
+   
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">						
+				<property name="driver" value="${jdbc.Driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.usename}" />
+				<property name="password" value="${jdbc.password}" />				
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+	    <mapper resource="cn/itsource/domain/ProductMapper.xml" />
+	</mappers>
+</configuration>

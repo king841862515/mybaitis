@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper  namespace="cn.itsource.domain.one2many.CategoryAlias嵌套结果Mapper">
+ 	
+ 	<!-- 自己设置映射关系 -->
+ 	<resultMap type="cn.itsource.domain.one2many.CategoryAlias" id="categoryMap">
+ 	
+ 	
+ 			<id      property="cid"      column="cid" />
+	    	<result  property="cname"    column="cname" />
+ 	
+ 			<collection property="products" javaType="cn.itsource.domain.one2many.ProductAlias">
+ 				<id     property="pid"     column="pid"/>
+	    		<result property="pname"   column="pname"/>
+	    		<result property="price"   column="price"/>
+	    		<result property="flag"    column="flag"/>
+ 			</collection>
+ 	
+ 	</resultMap>
+ 	
+    <select id="getCategorys" resultMap="categoryMap"  >
+       select * from category c
+       		left join products p on c.cid = p.category_id
+    </select>
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ </mapper>
